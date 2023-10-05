@@ -11,6 +11,10 @@ public class Room {
         return roomId;
     }
 
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
+    }
+
     public boolean isAvailable() {
         return isAvailable;
     }
