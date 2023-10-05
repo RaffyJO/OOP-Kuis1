@@ -58,8 +58,16 @@ public class Reservation {
         return room;
     }
 
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
     public Date getStartTime() {
         return startTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
     public Date getEndTime() {
