@@ -9,12 +9,14 @@ public class Reservation {
     private Date startTime;
     private Date endTime;
     private boolean approved;
+    private EquipmentManager equipmentManager;
 
-    public Reservation(Peminjam peminjam, Room room, Date startTime, Date endTime) {
+    public Reservation(Peminjam peminjam, Room room, Date startTime, Date endTime, EquipmentManager equipmentManager) {
         this.peminjam = peminjam;
         this.room = room;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.equipmentManager = equipmentManager;
         this.approved = false;
     }
 
@@ -72,5 +74,13 @@ public class Reservation {
 
     public Date getEndTime() {
         return endTime;
+    }
+
+    public EquipmentManager getEquipmentManager() {
+        return equipmentManager;
+    }
+
+    public void setEquipmentManager(EquipmentManager equipmentManager) {
+        this.equipmentManager = equipmentManager;
     }
 }
