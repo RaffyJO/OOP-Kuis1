@@ -55,7 +55,20 @@ public class Main {
                     String endTimeStr = scanner.nextLine();
                     Date endTime = dateFormat.parse(endTimeStr);
 
-                    Reservation newReservation = new Reservation(peminjam, room, startTime, endTime);
+                    EquipmentManager equipmentManager = new EquipmentManager();
+                    boolean addingEquipment = true;
+                    System.out.println("Masukan nama peralatan yang ingin dipinjam\nKetik 'done' untuk berhenti: ");
+                    while (addingEquipment) {
+                        String newEquipment = scanner.nextLine();
+
+                        if (newEquipment.equalsIgnoreCase("done")) {
+                            addingEquipment = false;
+                        } else {
+                            equipmentManager.addEquipment(new Equipment(newEquipment));
+                        }
+                    }
+
+                    Reservation newReservation = new Reservation(peminjam, room, startTime, endTime, equipmentManager);
                     if (campus.getReservationManager().isReservationColliding(newReservation)) {
                         System.out.println(
                                 "Reservasi bertabrakan dengan reservasi yang sudah ada. Silakan pilih waktu atau ruangan lain.");
@@ -72,6 +85,7 @@ public class Main {
                     // meminta persetujuan dari admin
                     Admin admin = new Admin("Susi", "001", "JTI Admin");
                     Security security = new Security("Budi", "01", "Pamdal");
+                    Reservation selectedReservation = null;
                     System.out.println("----------------------------------");
                     System.out.println("Form Persetujuan Reservasi Ruangan");
                     System.out.println("----------------------------------");
@@ -85,8 +99,14 @@ public class Main {
                         break;
                     }
 
-                    Reservation selectedReservation = campus.getReservationManager().getReservations()
-                            .get(reservationNumber - 1);
+                    if (reservationNumber <= 0
+                            || reservationNumber > campus.getReservationManager().getReservations().size()) {
+                        System.out.println("Nomor peminjaman tidak valid");
+                        continue;
+                    } else {
+                        selectedReservation = campus.getReservationManager().getReservations()
+                                .get(reservationNumber - 1);
+                    }
 
                     System.out.print("Nama Security: ");
                     String securityName = scanner.next();
@@ -104,6 +124,7 @@ public class Main {
                         System.out.println("Peminjaman berhasil disetujui oleh Admin dan Security.");
                     } else {
                         System.out.println("Nama admin atau security yang diinputkan salah!");
+                        continue;
                     }
                     System.out.println();
                     break;
@@ -132,7 +153,10 @@ public class Main {
                         System.out.println("Admin             : " + namaAdmin);
                         System.out.println("Security          : " + namaSecurity);
                         System.out.println("Approved          : " + reservationList.isApproved());
-                        System.out.println();
+                        System.out.println("Daftar peralatan  : ");
+                        for (Equipment equipmentItem : reservationList.getEquipmentManager().getEquipments()) {
+                            System.out.println("- " + equipmentItem.getEquipmentName());
+                        }
                     }
                     System.out.println();
                     break;
@@ -146,7 +170,8 @@ public class Main {
                         if (reservation.getNoReservation() == deleteReservasi) {
                             if (reservation.getNoReservation() == deleteReservasi) {
                                 campus.getReservationManager().removeReservation(reservation);
-                                System.out.println("Nomor reservasi " + reservation.getNoReservation() + " berhasil dihapus");
+                                System.out.println(
+                                        "Nomor reservasi " + reservation.getNoReservation() + " berhasil dihapus");
                                 reservationFound = true;
                                 break;
                             }
@@ -191,6 +216,20 @@ public class Main {
                             String newEndTimeStr = scanner.nextLine();
                             Date newEndTime = dateFormat.parse(newEndTimeStr);
 
+                            EquipmentManager newEquipmentManager = new EquipmentManager();
+                            boolean newAddingEquipment = true;
+                            System.out.println(
+                                    "Masukan nama peralatan yang ingin dipinjam\nKetik 'done' untuk berhenti: ");
+                            while (newAddingEquipment) {
+                                String newEquipment = scanner.nextLine();
+
+                                if (newEquipment.equalsIgnoreCase("done")) {
+                                    newAddingEquipment = false;
+                                } else {
+                                    newEquipmentManager.addEquipment(new Equipment(newEquipment));
+                                }
+                            }
+
                             // Mengupdate data reservasi
                             reservation.getPeminjam().setName(newName);
                             reservation.getRoom().setRoomId(newRoomId);
@@ -199,6 +238,7 @@ public class Main {
                             reservation.setAdmin(null);
                             reservation.setSecurity(null);
                             reservation.setApproved(false);
+                            reservation.setEquipmentManager(newEquipmentManager);
 
                             System.out.println("Data Reservasi berhasil diperbarui.");
                             reservationCheck = true;
